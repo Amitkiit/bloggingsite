@@ -3,18 +3,73 @@ const blogSchema = require("../Models/Blogs")
 ///Populate use nhi kiya
 
 const createAuthor = async function (req, res) {
-    try {
-        let x = await authorSchema.create(req.body)
-        res.status(201).send(x)
+    try{
+
+        let data = req.body
+        if(Object.keys(data).length==0) return res.status(404).send({status:false,msg:"pls enter your data"})
+    
+        // if 3 data is missing and starting counting from fname
+        if(!data.fname && !data.lname && !data.title) return res.status(404).send({status:false,msg:"pls enter your fname,lname and title"})
+        if(!data.fname && !data.lname && !data.emails) return res.status(404).send({status:false,msg:"pls enter your fname,lname and emails"})
+        if(!data.fname && !data.lname && !data.password) return res.status(404).send({status:false,msg:"pls enter your fname,lname and password"})
+    
+        // targetting from lname
+    
+        if(!data.lname && !data.title && !data.emails ) return res.status(404).send({status:false,msg:"pls enter your lnamen,title and emails"})
+        if(!data.lname && !data.title && !data.password ) return res.status(404).send({status:false,msg:"pls enter your lnamen,title and password"})
+    
+        // targetting from title 
+        if(!data.title && !data.emails && !data.password ) return res.status(404).send({status:false,msg:"pls enter your title,emails and password"})
+    
+    
+        // if 2 data is missing
+        // targetting fname and all remaining
+        if(!data.fname && !data.lname) return res.status(404).send({status:false,msg:"pls enter your fname and lname"})
+        if(!data.fname && !data.title) return res.status(404).send({status:false,msg:"pls enter your fname and title"})
+        if(!data.fname && !data.emails) return res.status(404).send({status:false,msg:"pls enter your fname and emails"})
+        if(!data.fname && !data.password) return res.status(404).send({status:false,msg:"pls enter your fname and passowrd"})
+    
+        //targetting lname and remaining
+        if(!data.lname && !data.title ) return res.status(404).send({status:false,msg:"pls enter your lnamen and title"})
+        if(!data.lname && !data.emails ) return res.status(404).send({status:false,msg:"pls enter your lnamen and emails"})
+        if(!data.lname && !data.password) return res.status(404).send({status:false,msg:"pls enter your lnamen and password"})
+    
+        //targetting title and remaining
+        if(!data.title && !data.emails) return res.status(404).send({status:false,msg:"pls enter your title and emails"})
+        if(!data.title && !data.password) return res.status(404).send({status:false,msg:"pls enter your title and password"})
+    
+        //targetting emails and remaining
+        if(!data.emails && !data.password) return res.status(404).send({status:false,msg:"pls enter your emails and password"})
+         
+        // if 1 data is missing
+        if(!data.fname) return res.status(404).send({status:false,msg:"pls enter your fname "})
+        if(!data.lname) return res.status(404).send({status:false,msg:"pls enter your lname"})
+        if(!data.title) return res.status(404).send({status:false,msg:"pls enter your title"})
+        if(!data.emails) return res.status(404).send({status:false,msg:"pls enter your emails"})
+        if(!data.password) return res.status(404).send({status:false,msg:"pls enter your password"})
+        let authorDetail = await authorSchema.create(data)
+        res.status(201).send({status:true,msg:authorDetail})
+    
     }
-    catch (error) {
-        res.status(401).send(error.message)
-    }
-    //create vs save
+       catch(error){
+        res.status(500).send(error.message)
+       }
 }
+
+
+
 const createBlog = async function (req, res) {
+
+    
+
     try {
-        let x = req.body.authorId //124143  
+        let data =req.body
+        if(!data.title) return res.status(404).send({status:true,msg:"pls enter title"})
+        if(!data.body) return res.status(404).send({status:true,msg:"pls enter body"})
+        if(!data.authorId) return res.status(404).send({status:true,msg:"pls enter authorId"})
+        if(!data.subcategory) return res.status(404).send({status:true,msg:"pls enter subcategory"})
+
+        let x = data.authorId //124143  
         //if [] is empty then response wil be []
         //if {} is empty then resposne will be null
         let y = await authorSchema.findOne({ _id: x })// {empty} => null
@@ -31,6 +86,9 @@ const createBlog = async function (req, res) {
         res.status(500).send(error.message)
     }
 }
+
+
+
 // Query paremeter is remainining here
 const getBlog = async function (req, res) {
     let x = await blogSchema.find({ isDeleted: false, isPublished: true }) //[]
