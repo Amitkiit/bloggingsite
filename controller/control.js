@@ -1,5 +1,6 @@
 const authorSchema = require("../Models/Author")
 const blogSchema = require("../Models/Blogs")
+const jwt =require("jsonwebtoken")
 ///Populate use nhi kiya
 
 const createAuthor = async function (req, res) {
