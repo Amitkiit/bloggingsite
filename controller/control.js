@@ -6,6 +6,7 @@ const createAuthor = async function (req, res) {
     try {
 
         let data = req.body
+        //if we have not passed any data in body then this will be the method
         if (Object.keys(data).length == 0) return res.status(404).send({ status: false, msg: "pls enter your data" })
 
         // if 3 data is missing and starting counting from fname
@@ -15,7 +16,7 @@ const createAuthor = async function (req, res) {
 
         // targetting from lname
 
-        if (!data.lname && !data.title && !data.emails) return res.status(404).send({ status: false, msg: "pls enter your lnamen,title and emails" })
+        if (!data.lname && !data.title && !data.emails) return res.status(404).send({ status: false, msg: "pls enter your lname,title and emails" })
         if (!data.lname && !data.title && !data.password) return res.status(404).send({ status: false, msg: "pls enter your lnamen,title and password" })
 
         // targetting from title 
@@ -82,8 +83,6 @@ const createBlog = async function (req, res) {
         res.status(500).send(error.message)
     }
 }
-
-
 
 const getBlog = async function (req, res) {
     try {
@@ -175,9 +174,33 @@ const deleteQuery = async function (req, res) {
         res.status(500).send(e.message)
     }
 }
+//login
+const login = async function (req, res) {
+    try{
+    let emailId = req.body.email
+    let password = req.body.password
+    //use findOne will get the first object which will match the condition
+    let userValidation = await authorSchema.findOne({ email: emailId, password: password }).select({_id:1}) //returns {_id}
+    if (userValidation == null ) return res.status(401).send({ status: false, msg: "user does not exist" }) 
+   
+   //If succesfful validate then send a token
+    let token = jwt.sign({userId: userValidation._id.toString()},"this is my first project")
+    //send through header
+    res.header('x-api-key',token)
+    res.status(200).send({status:true,data:"Token is sent"})
+    }
+    catch(e){
+        res.status(500).send({msg:e.message})
+    }
+    
+}
+
+
 module.exports.createAuthor = createAuthor
 module.exports.createBlog = createBlog
 module.exports.getBlog = getBlog
 module.exports.updateBlog = updateBlog
 module.exports.deleteParam = deleteParam
 module.exports.deleteQuery = deleteQuery
+module.exports.login = login
+//exporting the variable
