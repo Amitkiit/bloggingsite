@@ -52,11 +52,11 @@ const createBlog = async function (req, res) {
         let x = data.authorId //124143  
         //if [] is empty then response wil be []
         //if {} is empty then resposne will be null
-        let y = await authorSchema.findOne({ _id: x })// {empty} => null
+        let y = await authorSchema.findOne({_id:x})// {empty} => null
         //console.log(y)
         if (y != null) {
             let z = await blogSchema.create(req.body)
-            res.status(201).send(z)
+            res.status(201).send({status:true,data:y})
         }
         else {
             res.status(400).send("Invalid Request")
@@ -73,7 +73,7 @@ const getBlog = async function (req, res) {
         let x = await blogSchema.find({ $and: [{ isDeleted: false}, {isPublished: true }, req.query] }) //returns []
         //if array is empty 
         if (x.length > 0) {
-            res.status(200).send(x)
+            res.status(200).send({status:true,data:x})
         }
         else {
             res.status(404).send("No documents are found")
@@ -91,7 +91,7 @@ const updateBlog = async function (req, res) {
         //if (id.length == 0) return res.status(404).send("Blog Id is needed")
         //Check if blog Id exixts or not and whether isDeleted is true ?
         let x = await blogSchema.findById(id) //object
-        if (x == null) return res.status(404).send({ status: false, msg: "Blog Not Found" })
+        if (x == null) return res.status(404).send({ status: false, message: "Blog Not Found" })
         //if (x.isDeleted == true) return res.status(401).send({ status: false, msg: "Blog is already deleted" })
         if (x.isDeleted == false) 
         //Now update the doc by Id
@@ -112,10 +112,10 @@ const updateBlog = async function (req, res) {
             },
             { new: true }
         )
-        res.status(201).send({ status: true, msg: updateBlog }) //Success if modified
+        res.status(200).send({ status: true,message:"Blog update successfull", data: updateBlog }) //Success if modified
     }
     else{
-        res.status(404).send({status:false,msg:"Blog is already deleted"})
+        res.status(404).send({status:false,message:"Blog is already deleted"})
     }
 
     }
@@ -141,12 +141,12 @@ const deleteParam = async function (req, res) {
         return res.status(200).send({ status: true, msg: y })
         }
         else{
-            res.status(404).send({msg:"Blog is already deleted then no need to delete"})
+            res.status(404).send({message:"Blog is already deleted then no need to delete"})
         }
 
     }
-    catch (e) {
-        res.status(500).send(e.message)
+    catch (error) {
+        res.status(500).send(error.message)
     }
 }
 
@@ -162,14 +162,14 @@ const deleteQuery = async function (req, res) {
         //check if modifedCount is greater than 0
         console.log(y)
         if (y.modifiedCount > 0) {
-            res.status(201).send({ status: "Successfully deleted",msg:y })
+            res.status(200).send({ status: true})
         }
         else {
-            res.status(404).send({ msg: "Blog is deleted" })
+            res.status(404).send({ message: "Blog is deleted" })
         }
     }
-    catch (e) {
-        res.status(500).send(e.message)
+    catch (error) {
+        res.status(500).send(error.message)
     }
 }
 //login
@@ -189,8 +189,8 @@ const login = async function (req, res) {
     res.status(200).send({status:true,data:"Token is sent"})
     
     }
-    catch(e){
-        res.status(500).send({msg:e.message})
+    catch(error){
+        res.status(500).send({msg:error.message})
     }
     
 }

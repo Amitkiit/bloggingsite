@@ -11,8 +11,8 @@ let authentication = async function (req, res, next) {
             res.status(400).send({ msg: "x-api-key is require in header" })
         }
     }
-    catch (e) {
-        res.status(500).send({ msg: e.message })
+    catch (error) {
+        res.status(500).send({ msg: error.message })
     }
 }
 module.exports.authentication = authentication
