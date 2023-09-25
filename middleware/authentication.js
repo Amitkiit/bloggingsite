@@ -8,7 +8,7 @@ let authentication = async function (req, res, next) {
             next()
         }
         else {
-            res.status(400).send({ msg: "x-api-key is require in header" })
+            res.status(400).send({ msg: "x-api-key is require in header tejdxdm x,nsn,.c.mnx cdm" })
         }
     }
     catch (e) {
