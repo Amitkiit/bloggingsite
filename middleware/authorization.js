@@ -2,10 +2,10 @@ const blogSchema = require("../Models/Blogs")
 
 const authorization = async function (req, res, next) {
     try {
-        //checking whether author has posted this blog or not
+        //checking whether author has posted this blog or not  and i ahve aslid change ssome code gere
         let x = req.params.blogId
         //console.log(x)
-        let Id = req.Id
+        //let Id = req.Id
         //console.log(Id)
         let db = await blogSchema.findOne({_id:x})
         //console.log(db)
